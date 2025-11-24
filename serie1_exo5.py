@@ -1,9 +1,20 @@
-notes = [9.99, 14.5, 3.2, 29.0]
+prix = [9.99, 14.5, 3.2, 29.0]
 
-print("Premier prix :", notes[9.99])
-print("Nombre de prix :", len(prix))
-for prix in prix:
-    print("Prix :", prix)
+print("Liste des prix :")
+for p in prix:
+    print("Prix :", p)
 
-    prix.append(14)
-print(prix)
+total = 0
+for p in prix:
+    total = total + p
+
+print("Total des prix :", total)
+
+
+moyenne = total / len(prix)
+print("Prix moyen :", moyenne)
+
+print("Prix strictement supérieurs à 10€ :")
+for p in prix:
+    if p > 10:
+        print(p)
