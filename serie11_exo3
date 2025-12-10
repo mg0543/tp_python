@@ -1,0 +1,70 @@
+# Programme initial (à analyser)
+
+score_joueur1 = 0
+score_joueur2 = 0
+
+def ajouter_points_j1(points):
+    global score_joueur1
+    score_joueur1 += points
+
+def ajouter_points_j2(points):
+    global score_joueur2
+    score_joueur2 += points
+
+def afficher_scores():
+    print("Joueur 1 :", score_joueur1)
+    print("Joueur 2 :", score_joueur2)
+
+# Scénario de jeu
+ajouter_points_j1(10)
+ajouter_points_j2(5)
+ajouter_points_j1(7)
+afficher_scores()
+
+# Problèmes liés aux variables globales :
+# - Les fonctions dépendent de variables globales (score_joueur1, score_joueur2),
+#   ce qui rend le code plus difficile à tester et à comprendre.
+# - Si on veut ajouter un troisième joueur, il faudrait créer encore une
+#   nouvelle variable globale et de nouvelles fonctions (ajouter_points_j3, etc.),
+#   ce qui ne scale pas bien.
+
+ajouter_points_j1(10)
+ajouter_points_j2(5)
+ajouter_points_j1(7)
+afficher_scores()
+
+def ajouter_points(scores, nom_joueur, points):
+    """
+    Reçoit un dictionnaire scores, le nom d'un joueur et un nombre de points.
+    Met à jour le score du joueur et renvoie le dictionnaire (mis à jour).
+    """
+    ancien_score = scores.get(nom_joueur, 0)
+    scores[nom_joueur] = ancien_score + points
+    return scores
+
+
+def afficher_scores(scores):
+    """Affiche tous les joueurs et leurs scores."""
+    print("Scores des joueurs :")
+    for nom_joueur, score in scores.items():
+        print(f"- {nom_joueur} :", score)
+
+
+# Scénario de jeu équivalent à la version initiale
+
+scores = {
+    "joueur1": 0,
+    "joueur2": 0,
+}
+
+scores = ajouter_points(scores, "joueur1", 10)  # joueur1 : 10
+scores = ajouter_points(scores, "joueur2", 5)   # joueur2 : 5
+scores = ajouter_points(scores, "joueur1", 7)   # joueur1 : 17
+
+afficher_scores(scores)
+
+# Commentaire :
+# Cette version est plus facile à faire évoluer pour ajouter un troisième joueur.
+# Il suffit d'ajouter une nouvelle entrée dans le dictionnaire (par exemple
+# "joueur3": 0) ou d'appeler ajouter_points(scores, "joueur3", points).
+

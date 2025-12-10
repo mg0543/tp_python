@@ -1,0 +1,31 @@
+# score_global.py
+
+score = 0
+
+def ajouter_bonus():
+    global score
+    score += 5
+    print("Nouveau score après bonus :", score)
+
+def ajouter_malus():
+    global score
+    score -= 3
+    print("Nouveau score après malus :", score)
+
+# Commentaire :
+# Ce code est mal conçu car les fonctions ajouter_bonus et ajouter_malus
+# dépendent d'une variable globale "score". Elles la modifient directement
+# avec le mot-clé 'global'.
+# Cela pose plusieurs problèmes :
+# - la fonction ne peut pas être facilement testée séparément (elle dépend
+#   d'un état global caché),
+# - on ne sait pas, en lisant juste la signature de la fonction, qu'elle
+#   modifie une variable extérieure,
+# - si plusieurs parties du programme modifient la même variable globale,
+#   cela peut créer des bugs difficiles à comprendre.
+
+# Scénario de test
+ajouter_bonus()
+ajouter_bonus()
+ajouter_malus()
+print("Score final :", score)

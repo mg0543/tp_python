@@ -1,0 +1,26 @@
+# test_service_remise_log.py
+
+import unittest
+from service_remise_log import appliquer_remise
+
+
+class TestAppliquerRemise(unittest.TestCase):
+
+    def test_remise_valide(self):
+        """100 € avec remise 10 % -> 90 €"""
+        resultat = appliquer_remise(100, 0.10)
+        self.assertAlmostEqual(resultat, 90.0)
+
+    def test_remise_invalide_declenche_exception(self):
+        """Une remise hors de [0, 1] doit lever ValueError."""
+        # Cas remise négative
+        with self.assertRaises(ValueError):
+            appliquer_remise(100, -0.1)
+
+        # Cas remise > 1
+        with self.assertRaises(ValueError):
+            appliquer_remise(100, 1.5)
+
+
+if __name__ == "__main__":
+    unittest.main()

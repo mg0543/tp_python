@@ -1,0 +1,43 @@
+# td11_ex1.py
+# Erreur obtenue avec la version initiale :
+# UnboundLocalError: local variable 'score' referenced before assignment
+#
+# Explication :
+# Dans la fonction ajouter_points(points), on écrit "score = score + points".
+# Dès qu'il y a une affectation à "score" dans une fonction, Python considère
+# que "score" est une variable locale à cette fonction.
+# On essaie ensuite d'utiliser "score" dans le print avant de lui avoir donné
+# une valeur locale : cela provoque l'erreur UnboundLocalError.
+#
+# Ancienne version (buguée) :
+#
+# score = 0
+#
+# def ajouter_points(points):
+#     print("Score avant :", score)
+#     score = score + points
+#     print("Score après :", score)
+#
+# ajouter_points(10)
+
+# --------------------------------------------------------------------
+# Version corrigée sans utiliser 'global'
+# --------------------------------------------------------------------
+
+score = 0  # variable globale utilisée dans le code principal seulement
+
+
+def ajouter_points(score_actuel, points):
+    """
+    Reçoit un score actuel et un nombre de points,
+    affiche le score avant/après et renvoie le nouveau score.
+    """
+    print("Score avant :", score_actuel)
+    nouveau_score = score_actuel + points
+    print("Score après :", nouveau_score)
+    return nouveau_score
+
+
+# Code principal : c'est ici qu'on met à jour la variable globale
+score = ajouter_points(score, 10)
+print("Score global final :", score)

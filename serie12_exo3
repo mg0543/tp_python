@@ -1,0 +1,25 @@
+# serie12_exo3.py
+
+import unittest
+from remise import calculer_prix_ttc
+
+
+class TestCalculerPrixTTC(unittest.TestCase):
+    def test_prix_normal(self):
+        """Test avec un prix normal : 100 € et TVA 20 % -> 120 €"""
+        resultat = calculer_prix_ttc(100, 0.20)
+        self.assertAlmostEqual(resultat, 120.0)
+
+    def test_prix_nul(self):
+        """Test avec un prix HT nul : 0 €"""
+        resultat = calculer_prix_ttc(0, 0.20)
+        self.assertAlmostEqual(resultat, 0.0)
+
+    def test_prix_negatif_declenche_exception(self):
+        """Un prix HT négatif doit lever ValueError"""
+        with self.assertRaises(ValueError):
+            calculer_prix_ttc(-10, 0.20)
+
+
+if __name__ == "__main__":
+    unittest.main()

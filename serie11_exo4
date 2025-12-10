@@ -1,0 +1,43 @@
+# td11_ex4.py
+# Gestion de scores avec une classe ScoreBoard, sans variables globales.
+
+class ScoreBoard:
+    def __init__(self):
+        # Dictionnaire {nom_joueur: score}
+        self.scores = {}
+
+    def ajouter_points(self, nom_joueur, points):
+        """
+        Ajoute 'points' au joueur donné.
+        Si le joueur n'existe pas encore, il est créé avec un score initial de 0.
+        """
+        score_actuel = self.scores.get(nom_joueur, 0)
+        self.scores[nom_joueur] = score_actuel + points
+
+    def afficher(self):
+        """Affiche tous les joueurs et leurs scores."""
+        print("Scores :")
+        for nom_joueur, score in self.scores.items():
+            print(f"- {nom_joueur} : {score}")
+
+
+if __name__ == "__main__":
+    # Scénario de test
+
+    tableau = ScoreBoard()
+
+    tableau.ajouter_points("joueur1", 10)
+    tableau.ajouter_points("joueur2", 5)
+    tableau.ajouter_points("invité", 7)
+
+    tableau.afficher()
+
+    # Commentaire :
+    # Avec cette classe, l'état  est encapsulé dans l'objet ScoreBoard,
+    # dans l'attribut d'instance self.scores.
+    # On n'utilise plus de variables globales comme score_joueur1, score_joueur2, etc.
+    # Le code est plus clair et plus facile à faire évoluer :
+    # - pour ajouter un nouveau joueur, il suffit d'appeler ajouter_points
+    #   avec un nouveau nom de joueur ;
+    # - toutes les opérations sur les scores passent par les méthodes de la classe,
+    #   ce qui centralise la logique au même endroit.

@@ -1,0 +1,48 @@
+# td12_ex2.py
+
+import logging
+
+# Configuration du logging :
+# - niveau INFO
+# - format avec date/heure, niveau, nom du logger, message
+# - écriture dans le fichier "commande.log"
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
+    filename="commande.log",
+    filemode="a",  # on ajoute à la fin du fichier
+)
+
+logger = logging.getLogger(__name__)
+
+
+def traiter_commande(commande):
+    """
+    Traite une commande représentée par un dictionnaire.
+    Exemple de commande : {"id": 1, "client": "Alice", "quantite": 3}
+    """
+    logger.debug("Commande reçue : %s", commande)
+
+    if not commande:
+        logger.error("Commande vide")
+        return
+
+    logger.info("Vérification du stock...")
+
+    if commande.get("quantite", 0) <= 0:
+        logger.error("Quantité invalide : %s", commande.get("quantite"))
+        return
+
+    logger.info("Commande validée pour le client %s", commande.get("client"))
+    # ... autres traitements ...
+
+
+if __name__ == "__main__":
+    # Cas valide
+    traiter_commande({"id": 1, "client": "Alice", "quantite": 3})
+
+    # Cas invalide pour générer des ERROR dans commande.log
+    traiter_commande({"id": 2, "client": "Bob", "quantite": 0})
+
+    # Autre cas invalide : commande vide
+    traiter_commande({})
