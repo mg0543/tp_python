@@ -1,0 +1,110 @@
+def creer_panier():
+    """Crée un panier : ici, simplement une liste vide."""
+    return []
+
+
+def ajouter_article(panier, article):
+    """
+    Ajoute un article dans le panier.
+    Ici, panier est juste une liste que l'on reçoit en paramètre.
+    """
+    panier.append(article)
+
+
+def total_articles(panier):
+    """Retourne le nombre d'articles dans le panier (longueur de la liste)."""
+    return len(panier)
+
+
+def demo_version_fonctionnelle():
+    print("=== Démo version fonctionnelle ===")
+    panier = creer_panier()
+    ajouter_article(panier, "Clavier")
+    ajouter_article(panier, "Souris")
+    ajouter_article(panier, "Écran")
+
+    print("Contenu du panier :", panier)
+    print("Nombre total d'articles :", total_articles(panier))
+    print()
+
+
+# ==============================
+# 2) VERSION AVEC CLASSE PANIER
+# ==============================
+
+class Panier:
+    def __init__(self):
+        """
+        Constructeur du panier.
+        self représente l'instance du panier en cours de création.
+        On initialise un attribut d'instance 'articles' à une liste vide.
+        Chaque objet Panier aura sa propre liste d'articles.
+        """
+        self.articles = []
+
+    def ajouter_article(self, article):
+        """
+        Ajoute un article au panier.
+        self est le panier sur lequel on appelle la méthode.
+        Exemple : panier_alice.ajouter_article("Clavier")
+        -> Python traduit cet appel en : Panier.ajouter_article(panier_alice, "Clavier")
+        -> donc 'self' sera panier_alice à l'intérieur de la méthode.
+        """
+        self.articles.append(article)
+
+    def total_articles(self):
+        """
+        Retourne le nombre d'articles dans CE panier.
+        On utilise self.articles car chaque panier a sa propre liste.
+        """
+        return len(self.articles)
+
+    def vider(self):
+        """Vide complètement le panier."""
+        self.articles.clear()
+
+
+def demo_version_classe():
+    print("=== Démo version classe Panier ===")
+    panier_alice = Panier()
+    panier_bob = Panier()
+
+    # On ajoute des articles dans le panier d'Alice
+    panier_alice.ajouter_article("Clavier")
+    panier_alice.ajouter_article("Souris")
+
+    # On ajoute un article dans le panier de Bob
+    panier_bob.ajouter_article("Écran")
+
+    print("Panier d'Alice :", panier_alice.articles)
+    print("Nombre d'articles (Alice) :", panier_alice.total_articles())
+
+    print("Panier de Bob :", panier_bob.articles)
+    print("Nombre d'articles (Bob) :", panier_bob.total_articles())
+
+    # On montre qu'on peut vider uniquement le panier d'Alice
+    panier_alice.vider()
+    print("\nAprès vidage du panier d'Alice :")
+    print("Panier d'Alice :", panier_alice.articles)
+    print("Panier de Bob :", panier_bob.articles)
+    print()
+
+    # Commentaire récapitulatif :
+    # - self dans les méthodes (ajouter_article, total_articles, vider)
+    #   représente toujours l'objet concret sur lequel on appelle la méthode.
+    #   Par exemple, dans panier_bob.total_articles(), self = panier_bob.
+    # - Par rapport à la version fonctionnelle :
+    #     * Les données (la liste d'articles) sont encapsulées dans l'objet Panier
+    #       au lieu d'être passées de fonction en fonction.
+    #     * On appelle les opérations directement sur l'objet :
+    #           panier.ajouter_article(...)
+    #       au lieu de :
+    #           ajouter_article(panier, ...)
+    # - Chaque instance de Panier possède son propre état (self.articles),
+    #   ce qui rend les paniers indépendants (Alice vs Bob).
+
+
+if __name__ == "__main__":
+    # On lance les deux démos pour comparer les approches
+    demo_version_fonctionnelle()
+    demo_version_classe()

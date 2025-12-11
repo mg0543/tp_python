@@ -1,0 +1,24 @@
+# td16_ex2_main.py
+
+import td16_ex2_module
+
+
+if __name__ == "__main__":
+    print("Avant appel à demo()")
+    td16_ex2_module.demo()
+    print("Après appel à demo()")
+
+    # Commentaire :
+    # - Quand on exécute python td16_ex2_module.py :
+    #     * __name__ == "__main__" dans td16_ex2_module
+    #     * donc le bloc if __name__ == "__main__": s'exécute.
+    #
+    # - Quand on exécute python td16_ex2_main.py :
+    #     * td16_ex2_main a __name__ == "__main__"
+    #     * td16_ex2_module est importé :
+    #           __name__ vaut "td16_ex2_module" dans ce fichier,
+    #       donc le bloc if __name__ == "__main__" NE s'exécute pas.
+    #
+    # -> if __name__ == "__main__": permet de mettre du code qui
+    #    ne s'exécute que si le fichier est lancé directement,
+    #    pas lorsqu'il est importé comme module.

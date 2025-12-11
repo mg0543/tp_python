@@ -1,0 +1,98 @@
+# td15_ex2.py
+# Exercice 2 – Comptes bancaires : héritage, super() & surcharge
+
+class CompteBancaire:
+    def __init__(self, titulaire: str, solde_initial: float = 0.0):
+        self.titulaire = titulaire
+        self.solde = solde_initial
+
+    def deposer(self, montant: float):
+        """Ajoute un montant au solde."""
+        if montant <= 0:
+            raise ValueError("Le montant à déposer doit être positif")
+        self.solde += montant
+
+    def retirer(self, montant: float):
+        """
+        Retire un montant si le solde est suffisant.
+        Lève ValueError si montant <= 0 ou solde insuffisant.
+        """
+        if montant <= 0:
+            raise ValueError("Le montant à retirer doit être positif")
+        if montant > self.solde:
+            raise ValueError("Solde insuffisant pour ce retrait")
+        self.solde -= montant
+
+    def afficher(self):
+        print(f"{self.titulaire} – solde : {self.solde} €")
+
+
+class CompteEpargne(CompteBancaire):
+    def __init__(self, titulaire: str, solde_initial: float = 0.0, taux_interet: float = 0.02):
+        # On réutilise l'initialisation de CompteBancaire
+        super().__init__(titulaire, solde_initial)
+        self.taux_interet = taux_interet
+
+    def appliquer_interets(self):
+        """Augmente le solde en appliquant le taux d'intérêt."""
+        self.solde += self.solde * self.taux_interet
+
+
+class CompteCourant(CompteBancaire):
+    def __init__(self, titulaire: str, solde_initial: float = 0.0, decouvert_autorise: float = 0.0):
+        # Appel au constructeur de la classe parente
+        super().__init__(titulaire, solde_initial)
+        self.decouvert_autorise = decouvert_autorise
+
+    def retirer(self, montant: float):
+        """
+        Redéfinition de retirer pour autoriser un découvert.
+        Le solde peut devenir négatif, mais pas en dessous de -decouvert_autorise.
+        """
+        if montant <= 0:
+            raise ValueError("Le montant à retirer doit être positif")
+
+        # Solde qui résulterait du retrait
+        solde_apres = self.solde - montant
+        if solde_apres < -self.decouvert_autorise:
+            raise ValueError("Découvert autorisé dépassé")
+        self.solde = solde_apres
+
+
+if __name__ == "__main__":
+    # Création des comptes
+    compte_simple = CompteBancaire("Alice", 100.0)
+    compte_epargne = CompteEpargne("Bob", 200.0, taux_interet=0.05)
+    compte_courant = CompteCourant("Charlie", 50.0, decouvert_autorise=100.0)
+
+    # Opérations sur le compte simple
+    compte_simple.deposer(50)
+    try:
+        compte_simple.retirer(200)
+    except ValueError as e:
+        print("Erreur compte_simple :", e)
+
+    # Opérations sur le compte épargne
+    compte_epargne.deposer(100)
+    compte_epargne.appliquer_interets()
+
+    # Opérations sur le compte courant
+    compte_courant.deposer(20)
+    compte_courant.retirer(80)   # devrait passer : solde = -10
+    try:
+        compte_courant.retirer(200)  # devrait dépasser le découvert
+    except ValueError as e:
+        print("Erreur compte_courant :", e)
+
+    # Affichage final des soldes
+    compte_simple.afficher()
+    compte_epargne.afficher()
+    compte_courant.afficher()
+
+    # Commentaires :
+    # - super() est utilisé dans CompteEpargne.__init__ et CompteCourant.__init__
+    #   pour réutiliser le code du constructeur de CompteBancaire.
+    # - CompteCourant.retirer surcharge (override) la méthode retirer de
+    #   CompteBancaire pour changer la règle métier (découvert autorisé).
+    # - CompteEpargne et CompteCourant sont des cas particuliers de
+    #   CompteBancaire : ils "sont des" comptes bancaires avec des règles en plus.

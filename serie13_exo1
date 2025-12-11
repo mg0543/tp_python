@@ -1,0 +1,40 @@
+class Produit:
+    # Attribut de classe partagé par toutes les instances
+    taux_tva = 0.2
+
+    def __init__(self, nom: str, prix_ht: float):
+        if prix_ht < 0:
+            raise ValueError("Le prix HT doit être positif")
+        # Attributs d'instance (propres à chaque objet)
+        self.nom = nom
+        self.prix_ht = prix_ht
+
+    def prix_ttc(self) -> float:
+        """Retourne le prix TTC en utilisant le taux de TVA de la classe."""
+        return self.prix_ht * (1 + Produit.taux_tva)
+
+
+if __name__ == "__main__":
+    p1 = Produit("Clavier", 50.0)
+    p2 = Produit("Souris", 30.0)
+
+    print("===== Avant changement de TVA =====")
+    print(f"{p1.nom} : HT={p1.prix_ht}€ TTC={p1.prix_ttc()}€")
+    print(f"{p2.nom} : HT={p2.prix_ht}€ TTC={p2.prix_ttc()}€")
+    print("taux_tva (via classe) :", Produit.taux_tva)
+    print("taux_tva (via instance) p1 :", p1.taux_tva)
+
+    # On change l'attribut de classe
+    Produit.taux_tva = 0.1
+
+    print("\n===== Après changement de TVA (attribut de classe) =====")
+    print(f"{p1.nom} : HT={p1.prix_ht}€ TTC={p1.prix_ttc()}€")
+    print(f"{p2.nom} : HT={p2.prix_ht}€ TTC={p2.prix_ttc()}€")
+    print("taux_tva (via classe) :", Produit.taux_tva)
+    print("taux_tva (via instance) p1 :", p1.taux_tva)
+
+    # Conclusion (en commentaire) :
+    # - taux_tva est un attribut de classe : quand on le modifie sur Produit,
+    #   toutes les instances voient le nouveau taux.
+    # - p1.taux_tva et Produit.taux_tva pointent sur la même valeur,
+    #   tant qu'on n'a pas créé d'attribut d'instance "taux_tva" sur p1.

@@ -1,0 +1,15 @@
+import outils_chaine
+
+
+if __name__ == "__main__":
+    phrase = input("Saisis une phrase : ")
+
+    nb_mots = outils_chaine.compter_mots(phrase)
+    print(outils_chaine.SEPARATEUR)
+    print(f"Nombre de mots : {nb_mots}")
+
+    if outils_chaine.est_palindrome(phrase):
+        print("La phrase est un palindrome.")
+    else:
+        print("La phrase n'est pas un palindrome.")
+    print(outils_chaine.SEPARATEUR)

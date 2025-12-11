@@ -1,0 +1,39 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class Client:
+    nom: str
+    email: str
+    actif: bool = True
+
+    def desactiver(self):
+        """Désactive le client (actif passe à False)."""
+        self.actif = False
+
+
+if __name__ == "__main__":
+    c1 = Client("Alice", "alice@example.com")
+    c2 = Client("Bob", "bob@example.com", actif=False)
+    c3 = Client("Charlie", "charlie@example.com")
+
+    print("Avant désactivation :")
+    print(c1)
+    print(c2)
+    print(c3)
+
+    c1.desactiver()
+
+    print("\nAprès désactivation de c1 :")
+    print(c1)
+    print(c2)
+    print(c3)
+
+    # Commentaire :
+    # Grâce au décorateur @dataclass, Python a généré automatiquement :
+    # - une méthode __init__(self, nom, email, actif=True)
+    # - une méthode __repr__ lisible pour l'affichage (print(client))
+    # Sans dataclass, on aurait dû écrire ces méthodes à la main.
+    # On peut quand même ajouter nos propres méthodes métier comme
+    # desactiver(self), ce qui permet d'avoir à la fois moins de code
+    # "boilerplate" et une classe expressive.

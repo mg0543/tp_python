@@ -1,0 +1,16 @@
+from banque import CompteBancaire, virement
+
+
+if __name__ == "__main__":
+    compte_a = CompteBancaire("Alice", 1000)
+    compte_b = CompteBancaire("Bob", 500)
+
+    print("Avant virement :")
+    compte_a.afficher()
+    compte_b.afficher()
+
+    virement(compte_a, compte_b, 200)
+
+    print("\nAprès virement :")
+    compte_a.afficher()
+    compte_b.afficher()

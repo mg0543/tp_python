@@ -1,15 +1,10 @@
 
 import logging
 
-# Configuration du logging :
-# - niveau INFO
-# - format avec date/heure, niveau, nom du logger, message
-# - écriture dans le fichier "commande.log"
+# Configuration minimale : affichage sur la console, niveau INFO et plus
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
-    filename="commande.log",
-    filemode="a",  # on ajoute à la fin du fichier
+    format="%(levelname)s - %(name)s - %(message)s",
 )
 
 logger = logging.getLogger(__name__)
@@ -40,8 +35,6 @@ if __name__ == "__main__":
     # Cas valide
     traiter_commande({"id": 1, "client": "Alice", "quantite": 3})
 
-    # Cas invalide pour générer des ERROR dans commande.log
-    traiter_commande({"id": 2, "client": "Bob", "quantite": 0})
-
-    # Autre cas invalide : commande vide
+    # Cas invalides pour tester les logs
     traiter_commande({})
+    traiter_commande({"id": 2, "client": "Bob", "quantite": 0})

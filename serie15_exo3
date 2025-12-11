@@ -1,0 +1,69 @@
+# td15_ex3.py
+# Exercice 3 – Formes géométriques & polymorphisme
+
+from math import pi
+
+
+class Forme:
+    def aire(self):
+        """Méthode abstraite : doit être implémentée dans les sous-classes."""
+        raise NotImplementedError("Méthode aire() à implémenter dans les sous-classes")
+
+
+class Rectangle(Forme):
+    def __init__(self, largeur: float, hauteur: float):
+        self.largeur = largeur
+        self.hauteur = hauteur
+
+    def aire(self):
+        return self.largeur * self.hauteur
+
+
+class Cercle(Forme):
+    def __init__(self, rayon: float):
+        self.rayon = rayon
+
+    def aire(self):
+        return pi * (self.rayon ** 2)
+
+
+class TriangleRectangle(Forme):
+    def __init__(self, base: float, hauteur: float):
+        self.base = base
+        self.hauteur = hauteur
+
+    def aire(self):
+        return self.base * self.hauteur / 2
+
+
+def afficher_aires(formes):
+    """
+    Parcourt une liste de formes et affiche leur aire.
+    On n'utilise pas isinstance, on fait confiance au fait que chaque objet
+    possède une méthode aire() => polymorphisme / duck typing.
+    """
+    for f in formes:
+        print(f"Forme : {type(f).__name__}, aire = {f.aire()}")
+
+
+if __name__ == "__main__":
+    formes = [
+        Rectangle(2, 3),
+        Rectangle(5, 4),
+        Cercle(1),
+        Cercle(2),
+        TriangleRectangle(3, 4),
+    ]
+
+    afficher_aires(formes)
+
+    # Commentaires :
+    # - La classe Forme définit une interface (aire) mais ne l'implémente pas.
+    # - Rectangle, Cercle et TriangleRectangle héritent de Forme et
+    #   fournissent leur propre version de aire().
+    # - afficher_aires() ne teste jamais le type des objets (pas de isinstance),
+    #   elle appelle juste f.aire() sur chaque élément.
+    #   -> c'est du polymorphisme : le même appel f.aire() se comporte
+    #      différemment selon la sous-classe.
+    # - C'est aussi du "duck typing" : ce qui compte, c'est que l'objet ait
+    #   une méthode aire(), peu importe sa classe exacte.

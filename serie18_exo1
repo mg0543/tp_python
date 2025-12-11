@@ -1,0 +1,66 @@
+from pathlib import Path
+
+
+def analyser_logs(fichier_log: Path):
+    if not fichier_log.exists():
+        print(f"Fichier de logs introuvable : {fichier_log}")
+        return
+
+    total_lignes = 0
+    nb_warning = 0
+    nb_error = 0
+
+    # Lecture efficace ligne par ligne
+    with fichier_log.open("r", encoding="utf-8") as f:
+        for ligne in f:
+            total_lignes += 1
+            if "[WARNING]" in ligne:
+                nb_warning += 1
+            if "[ERROR]" in ligne:
+                nb_error += 1
+
+    print("=== Rapport logs ===")
+    print(f"Lignes totales  : {total_lignes}")
+    print(f"Lignes WARNING  : {nb_warning}")
+    print(f"Lignes ERROR    : {nb_error}")
+
+
+def filtrer_logs_sans_debug(fichier_log: Path, fichier_sans_debug: Path):
+    if not fichier_log.exists():
+        print(f"Fichier de logs introuvable : {fichier_log}")
+        return
+
+    lignes_totales = 0
+    lignes_conservees = 0
+
+    # On ouvre les deux fichiers dans un même with
+    with fichier_log.open("r", encoding="utf-8") as fin, \
+            fichier_sans_debug.open("w", encoding="utf-8") as fout:
+        for ligne in fin:
+            lignes_totales += 1
+            if "[DEBUG]" in ligne:
+                # On saute les logs DEBUG
+                continue
+            lignes_conservees += 1
+            fout.write(ligne)
+
+    print("\n=== Filtrage DEBUG ===")
+    print(f"Fichier source : {fichier_log}")
+    print(f"Fichier cible  : {fichier_sans_debug}")
+    print(f"Lignes totales    : {lignes_totales}")
+    print(f"Lignes conservées : {lignes_conservees}")
+
+    # Commentaire :
+    # Il ne faut pas utiliser f.read() sur des gros fichiers de logs (plusieurs
+    # centaines de Mo) car cela chargerait tout le contenu en mémoire d'un coup.
+    # Lire ligne par ligne permet de traiter des fichiers très volumineux
+    # sans exploser la mémoire RAM.
+
+
+if __name__ == "__main__":
+    dossier_logs = Path("logs")
+    fichier_log = dossier_logs / "app.log"
+    fichier_sans_debug = dossier_logs / "app_sans_debug.log"
+
+    analyser_logs(fichier_log)
+    filtrer_logs_sans_debug(fichier_log, fichier_sans_debug)

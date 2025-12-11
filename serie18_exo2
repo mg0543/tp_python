@@ -1,0 +1,100 @@
+
+import csv
+from pathlib import Path
+
+
+def est_ligne_valide(ligne: dict) -> tuple[bool, str | None]:
+    """
+    Vérifie qu'une ligne est valide :
+    - nom, age, ville non vides
+    - age convertible en entier
+    Retourne (True, None) si OK, (False, "raison") sinon.
+    """
+    nom = (ligne.get("nom") or "").strip()
+    age = (ligne.get("age") or "").strip()
+    ville = (ligne.get("ville") or "").strip()
+
+    if not nom:
+        return False, "nom manquant"
+    if not age:
+        return False, "age manquant"
+    if not ville:
+        return False, "ville manquante"
+
+    try:
+        int(age)
+    except ValueError:
+        return False, "age invalide (non entier)"
+
+    return True, None
+
+
+def nettoyer_clients_csv(fichier_source: Path):
+    if not fichier_source.exists():
+        print(f"Fichier CSV introuvable : {fichier_source}")
+        return
+
+    dossier = fichier_source.parent
+    fichier_propre = dossier / "clients_propre.csv"
+    fichier_erreurs = dossier / "clients_erreurs.csv"
+
+    lignes_valides = []
+    lignes_invalides = []
+
+    with fichier_source.open("r", encoding="utf-8", newline="") as f:
+        lecteur = csv.DictReader(f, delimiter=";")
+        champs = lecteur.fieldnames or ["nom", "age", "ville"]
+
+        for ligne in lecteur:
+            ok, raison = est_ligne_valide(ligne)
+            if ok:
+                lignes_valides.append(ligne)
+            else:
+                ligne["raison"] = raison
+                lignes_invalides.append(ligne)
+
+    # Écriture des lignes valides
+    with fichier_propre.open("w", encoding="utf-8", newline="") as f_ok:
+        champs_ok = ["nom", "age", "ville"]
+        ecrivain_ok = csv.DictWriter(f_ok, fieldnames=champs_ok, delimiter=";")
+        ecrivain_ok.writeheader()
+        for ligne in lignes_valides:
+            ecrivain_ok.writerow({
+                "nom": ligne["nom"],
+                "age": ligne["age"],
+                "ville": ligne["ville"],
+            })
+
+    # Écriture des lignes invalides
+    with fichier_erreurs.open("w", encoding="utf-8", newline="") as f_ko:
+        champs_ko = ["nom", "age", "ville", "raison"]
+        ecrivain_ko = csv.DictWriter(f_ko, fieldnames=champs_ko, delimiter=";")
+        ecrivain_ko.writeheader()
+        for ligne in lignes_invalides:
+            ecrivain_ko.writerow({
+                "nom": ligne.get("nom", ""),
+                "age": ligne.get("age", ""),
+                "ville": ligne.get("ville", ""),
+                "raison": ligne.get("raison", ""),
+            })
+
+    print("=== Nettoyage CSV ===")
+    print(f"Lignes lues      : {len(lignes_valides) + len(lignes_invalides)}")
+    print(f"Lignes valides   : {len(lignes_valides)}")
+    print(f"Lignes invalides : {len(lignes_invalides)}")
+    print("Résultats :")
+    print(f"  - {fichier_propre}")
+    print(f"  - {fichier_erreurs}")
+
+    # Commentaire :
+    # - csv.reader lit chaque ligne comme une liste de valeurs,
+    #   il faut gérer les colonnes par index (0, 1, 2...).
+    # - csv.DictReader lit chaque ligne comme un dict {colonne: valeur},
+    #   ce qui rend le code de nettoyage plus lisible :
+    #     ligne["nom"], ligne["age"], ligne["ville"].
+    #   C'est plus pratique pour ce genre d'ETL que des "listes de listes".
+
+
+if __name__ == "__main__":
+    chemin = Path("donnees") / "clients_brut.csv"
+    nettoyer_clients_csv(chemin)

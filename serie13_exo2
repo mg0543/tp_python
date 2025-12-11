@@ -1,0 +1,60 @@
+class StockProduit:
+    def __init__(self, nom: str, stock_initial: int = 0):
+        if stock_initial < 0:
+            raise ValueError("Le stock initial ne peut pas être négatif")
+        self.nom = nom
+        self._stock = stock_initial  # attribut "interne"
+
+    def ajouter(self, qte: int):
+        """Ajoute une quantité au stock (doit être > 0)."""
+        if qte <= 0:
+            raise ValueError("La quantité ajoutée doit être positive")
+        self._stock += qte
+
+    def retirer(self, qte: int):
+        """
+        Retire une quantité du stock.
+        - lève ValueError si qte est négative,
+        - lève ValueError si on retire plus que le stock disponible.
+        """
+        if qte < 0:
+            raise ValueError("La quantité retirée ne peut pas être négative")
+        if qte > self._stock:
+            raise ValueError(
+                f"Stock insuffisant : demande={qte}, disponible={self._stock}"
+            )
+        self._stock -= qte
+
+    def afficher_stock(self):
+        print(f"Stock de '{self.nom}' : {self._stock}")
+
+
+if __name__ == "__main__":
+    produit = StockProduit("Clavier", 10)
+    produit.afficher_stock()
+
+    # Ajouts valides
+    produit.ajouter(5)
+    produit.afficher_stock()
+
+    # Retrait valide
+    produit.retirer(3)
+    produit.afficher_stock()
+
+    # Tests d'erreurs
+    try:
+        produit.retirer(100)  # trop retirer
+    except ValueError as e:
+        print("Erreur attendue (retrait trop grand) :", e)
+
+    try:
+        produit.ajouter(0)  # quantité invalide
+    except ValueError as e:
+        print("Erreur attendue (ajout non positif) :", e)
+
+    # Exemple de ce qu'il NE FAUT PAS faire :
+    # produit._stock = -100
+    # Cela contourne toutes les vérifications métier (pas de contrôle).
+    # C'est dangereux car on viole la règle "le stock ne doit pas être négatif".
+    # D'où l'intérêt d'utiliser les méthodes ajouter / retirer plutôt que
+    # de modifier directement _stock depuis l'extérieur.

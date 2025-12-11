@@ -1,0 +1,51 @@
+class Animal:
+    def __init__(self, nom: str):
+        # Attribut commun à tous les animaux
+        self.nom = nom
+
+    def parler(self):
+        """Méthode générique pour un animal."""
+        print("L'animal fait un bruit.")
+
+
+class Chien(Animal):
+    def __init__(self, nom: str):
+        # On réutilise le constructeur de la classe parente
+        super().__init__(nom)
+
+    def parler(self):
+        """Surcharge de la méthode parler pour les chiens."""
+        print(f"{self.nom} aboie : Wouf !")
+
+
+class Chat(Animal):
+    def __init__(self, nom: str):
+        # super() appelle le __init__ de Animal
+        super().__init__(nom)
+
+    def parler(self):
+        """Surcharge de la méthode parler pour les chats."""
+        print(f"{self.nom} miaule : Miaou !")
+
+
+if __name__ == "__main__":
+    # On crée différents animaux
+    a = Animal("Bête inconnue")
+    c = Chien("Rex")
+    ch = Chat("Minou")
+
+    # On les met dans une liste
+    animaux = [a, c, ch]
+
+    # Même appel .parler(), mais comportement différent selon le type réel
+    for animal in animaux:
+        animal.parler()
+
+    # Commentaires :
+    # - L'héritage : Chien et Chat "héritent" de Animal, ils réutilisent
+    #   l'attribut nom et peuvent redéfinir des méthodes.
+    # - La surcharge (overriding) : Chien.parler et Chat.parler redéfinissent
+    #   la méthode parler() de Animal avec un comportement plus spécifique.
+    # - Polymorphisme : dans la boucle, on appelle toujours animal.parler()
+    #   sans tester le type. Mais l'implémentation appelée dépend du type
+    #   réel de l'objet (Animal, Chien ou Chat).

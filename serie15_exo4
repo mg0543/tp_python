@@ -1,0 +1,83 @@
+# td15_ex4.py
+# Exercice 4 – Logger & réflexion héritage vs composition
+
+from datetime import datetime
+
+
+class Logger:
+    def log(self, message: str):
+        print(f"[INFO] {message}")
+
+
+class TimestampLogger(Logger):
+    def log(self, message: str):
+        """
+        Ajoute un horodatage avant le message.
+        Utilise super().log pour réutiliser le format de base.
+        """
+        horodatage = datetime.now().isoformat(timespec="seconds")
+        super().log(f"{horodatage} - {message}")
+
+
+class UppercaseLogger(Logger):
+    def log(self, message: str):
+        """
+        Affiche le message en majuscules.
+        Utilise encore super().log pour garder le préfixe [INFO].
+        """
+        super().log(message.upper())
+
+
+class Application:
+    """
+    Exemple de composition : Application "a un" logger (self.logger).
+    On ne fait pas hériter Application de Logger, on lui donne un Logger.
+    """
+
+    def __init__(self, logger: Logger):
+        self.logger = logger
+
+    def executer(self):
+        # Simule une action de l'application
+        self.logger.log("L'application exécute une action importante.")
+
+
+if __name__ == "__main__":
+    # Différents loggers
+    logger_simple = Logger()
+    logger_timestamp = TimestampLogger()
+    logger_upper = UppercaseLogger()
+
+    print("=== Tests simples des loggers ===")
+    logger_simple.log("Bonjour")
+    logger_timestamp.log("Bonjour")
+    logger_upper.log("Bonjour")
+
+    print("\n=== Applications avec loggers composés ===")
+    app_timestamp = Application(logger_timestamp)
+    app_upper = Application(logger_upper)
+
+    app_timestamp.executer()
+    app_upper.executer()
+
+    # Commentaires :
+    # - Héritage :
+    #     * TimestampLogger et UppercaseLogger héritent de Logger.
+    #       Ils redéfinissent log() en appelant super().log(...)
+    #       pour réutiliser le comportement de base.
+    # - Composition :
+    #     * La classe Application ne dérive PAS de Logger.
+    #       Elle "possède" un logger (attribut self.logger).
+    #       Elle délègue le travail de log à cet objet.
+    # - Flexibilité de la composition :
+    #     * On peut créer Application avec n'importe quel objet
+    #       qui a une méthode log(message), par exemple :
+    #           Application(Logger())
+    #           Application(TimestampLogger())
+    #           Application(UppercaseLogger())
+    #       sans changer le code de la classe Application.
+    #     * On peut même imaginer un logger entièrement différent
+    #       (qui écrit dans un fichier, dans une base de données, etc.)
+    #       et l'injecter dans Application sans modifier cette dernière.
+    #     -> L'héritage modélise "est un" (TimestampLogger est un Logger),
+    #        la composition modélise "a un" (Application a un logger).
